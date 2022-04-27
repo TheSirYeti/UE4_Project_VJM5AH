@@ -117,6 +117,9 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("SetRun", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::SetRunningMotion);
+	PlayerInputComponent->BindAction("SetRun", IE_Released, this, &AUE4_Project_VJM5AHCharacter::StopRunningMotion);
+
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::OnFire);
 
@@ -258,8 +261,22 @@ void AUE4_Project_VJM5AHCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-		// add movement in that direction
-		AddMovementInput(GetActorForwardVector(), Value);
+		float newValue;
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, isRunning ? "True" : "False");
+
+		if (isRunning == true) {
+			newValue = Value * 20;
+			AddMovementInput(GetActorForwardVector(), newValue);
+			FString StringValue = FString::SanitizeFloat(Value * 20);
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, StringValue);
+
+		}
+		else {
+			newValue = Value;
+			AddMovementInput(GetActorForwardVector(), Value);
+			FString StringValue = FString::SanitizeFloat(Value);
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, StringValue);
+		}
 	}
 }
 
@@ -297,4 +314,12 @@ bool AUE4_Project_VJM5AHCharacter::EnableTouchscreenMovement(class UInputCompone
 	}
 	
 	return false;
+}
+
+void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
+	isRunning = true;
+}
+
+void AUE4_Project_VJM5AHCharacter::StopRunningMotion() {
+	isRunning = false;
 }
