@@ -25,3 +25,7 @@ void AMyBasicEnemy::Tick(float DeltaTime)
 
 }
 
+void AMyBasicEnemy::ChasePlayer(bool isChasing) {
+
+}
+

@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <UE4_Project_VJM5AH/UE4_Project_VJM5AHCharacter.h>
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "MyBasicEnemy.generated.h"
@@ -19,7 +20,7 @@ public:
 		float hp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		APlayerController* playerRef;
+		AUE4_Project_VJM5AHCharacter* playerRef;
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,4 +30,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+public:
+	virtual void ChasePlayer(bool isChasing);
 };
