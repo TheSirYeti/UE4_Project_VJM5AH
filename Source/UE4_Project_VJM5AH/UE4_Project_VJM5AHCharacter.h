@@ -3,8 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include <UE4_Project_VJM5AH/MyLevelTrigger.h>
 #include "UE4_Project_VJM5AHCharacter.generated.h"
 
 class UInputComponent;
@@ -51,6 +53,9 @@ class AUE4_Project_VJM5AHCharacter : public ACharacter
 	/** Motion controller (left hand) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UMotionControllerComponent* L_MotionController;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BoxCollider;
 
 public:
 	AUE4_Project_VJM5AHCharacter();

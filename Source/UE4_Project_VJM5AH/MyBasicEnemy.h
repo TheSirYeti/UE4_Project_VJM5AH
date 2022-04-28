@@ -20,7 +20,9 @@ public:
 		float hp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		AUE4_Project_VJM5AHCharacter* playerRef;
+		float fireRate;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 
 protected:
 	// Called when the game starts or when spawned

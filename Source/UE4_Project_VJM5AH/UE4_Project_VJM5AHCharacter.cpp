@@ -19,6 +19,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 {
+	//BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AMyLevelTrigger::OnOverlapBegin);
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
@@ -321,14 +323,5 @@ void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
 		
 		FVector rotatedDash = GetActorRotation().RotateVector(dashDirection);
 		LaunchCharacter(rotatedDash * DashForce, true, true);
-
-		//GetBaseAimRotation().Vector()
-
-		FString xString = FString::SanitizeFloat(rotatedDash.X);
-		FString yString = FString::SanitizeFloat(rotatedDash.Y);
-		FString zString = FString::SanitizeFloat(rotatedDash.Z);
-		FString dashString = xString + " | " + yString + " | " + zString;
-
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, dashString);
 	}
 }
