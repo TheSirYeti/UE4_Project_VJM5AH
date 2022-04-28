@@ -25,7 +25,7 @@ AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
-	DashForce = 2000.f;
+	DashForce = 2600.f;
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
