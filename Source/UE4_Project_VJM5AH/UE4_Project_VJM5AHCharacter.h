@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "UE4_Project_VJM5AHCharacter.generated.h"
 
 class UInputComponent;
@@ -92,6 +93,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	uint8 bUsingMotionControllers : 1;
 
+	UPROPERTY(EditAnywhere)
+	float DashForce;
+
 protected:
 	
 	/** Fires a projectile. */
@@ -119,8 +123,6 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	void SetRunningMotion();
-
-	void StopRunningMotion();
 
 	struct TouchData
 	{

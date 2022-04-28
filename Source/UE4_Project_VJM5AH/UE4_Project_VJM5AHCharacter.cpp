@@ -25,6 +25,7 @@ AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+	DashForce = 2000.f;
 
 	// Create a CameraComponent	
 	FirstPersonCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("FirstPersonCamera"));
@@ -116,9 +117,8 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 	// Bind jump events
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
+	
 	PlayerInputComponent->BindAction("SetRun", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::SetRunningMotion);
-	PlayerInputComponent->BindAction("SetRun", IE_Released, this, &AUE4_Project_VJM5AHCharacter::StopRunningMotion);
 
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::OnFire);
@@ -261,22 +261,18 @@ void AUE4_Project_VJM5AHCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-		float newValue;
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, isRunning ? "True" : "False");
+		AddMovementInput(GetActorForwardVector(), Value);
+		//if (isRunning == true) {
+		//	newValue = Value * 20;
+		//	AddMovementInput(GetActorForwardVector(), newValue);
+		//	FString StringValue = FString::SanitizeFloat(Value * 20);
+		//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, StringValue);
 
-		if (isRunning == true) {
-			newValue = Value * 20;
-			AddMovementInput(GetActorForwardVector(), newValue);
-			FString StringValue = FString::SanitizeFloat(Value * 20);
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, StringValue);
-
-		}
-		else {
-			newValue = Value;
-			AddMovementInput(GetActorForwardVector(), Value);
-			FString StringValue = FString::SanitizeFloat(Value);
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, StringValue);
-		}
+		//}
+		//else {
+		//	AddMovementInput(GetActorForwardVector(), Value);
+		//}
 	}
 }
 
@@ -317,9 +313,22 @@ bool AUE4_Project_VJM5AHCharacter::EnableTouchscreenMovement(class UInputCompone
 }
 
 void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
-	isRunning = true;
-}
+	if (GetCharacterMovement()->IsMovingOnGround()) {
 
-void AUE4_Project_VJM5AHCharacter::StopRunningMotion() {
-	isRunning = false;
+		float xValue = InputComponent->GetAxisValue("MoveForward");
+		float yValue = InputComponent->GetAxisValue("MoveRight");
+		FVector dashDirection = FVector(xValue, yValue, 0);
+		
+		FVector rotatedDash = GetActorRotation().RotateVector(dashDirection);
+		LaunchCharacter(rotatedDash * DashForce, true, true);
+
+		//GetBaseAimRotation().Vector()
+
+		FString xString = FString::SanitizeFloat(rotatedDash.X);
+		FString yString = FString::SanitizeFloat(rotatedDash.Y);
+		FString zString = FString::SanitizeFloat(rotatedDash.Z);
+		FString dashString = xString + " | " + yString + " | " + zString;
+
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, dashString);
+	}
 }
