@@ -9,6 +9,11 @@ AMyBasicTurret::AMyBasicTurret()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxColliderTurret"));
+	BoxCollider->GetScaledBoxExtent();
+	BoxCollider->SetupAttachment(RootComponent);
+
+	BoxCollider->OnComponentHit.AddDynamic(this, &AMyBasicTurret::OnTurretHit);
 }
 
 // Called when the game starts or when spawned
@@ -31,4 +36,13 @@ void AMyBasicTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	hp--;
+
+	if (hp <= 0) {
+		Destroy();
+	}
+}
+
 

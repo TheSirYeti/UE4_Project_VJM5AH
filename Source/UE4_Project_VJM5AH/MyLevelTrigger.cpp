@@ -8,7 +8,7 @@ AMyLevelTrigger::AMyLevelTrigger()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	BoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxTriggerTest"));
+	BoxTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxTriggerLevel"));
 	BoxTrigger->GetScaledBoxExtent();
 	BoxTrigger->SetupAttachment(RootComponent);
 	BoxTrigger->OnComponentBeginOverlap.AddDynamic(this, &AMyLevelTrigger::LevelLoadOnOverlap);

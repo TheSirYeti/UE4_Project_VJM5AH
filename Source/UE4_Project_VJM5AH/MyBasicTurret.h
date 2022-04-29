@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Components/BoxComponent.h"
 #include "MyBasicTurret.generated.h"
 
 UCLASS()
@@ -16,10 +17,13 @@ public:
 	AMyBasicTurret();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float hp;
+	int hp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float fireRate;
+	float fireRate;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BoxCollider;
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,5 +35,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	void OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 
 };

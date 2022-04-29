@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include <UE4_Project_VJM5AH/MyLevelTrigger.h>
 #include "UE4_Project_VJM5AHCharacter.generated.h"
@@ -56,6 +57,9 @@ class AUE4_Project_VJM5AHCharacter : public ACharacter
 
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxCollider;
+
+	UPROPERTY(EditAnywhere)
+	int hp;
 
 public:
 	AUE4_Project_VJM5AHCharacter();
@@ -129,6 +133,9 @@ protected:
 
 	void SetRunningMotion();
 
+	UFUNCTION(BlueprintCallable)
+	void GenerateDamage();
+
 	struct TouchData
 	{
 		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
@@ -162,4 +169,3 @@ public:
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
 };
-

@@ -11,6 +11,7 @@ AUE4_Project_VJM5AHProjectile::AUE4_Project_VJM5AHProjectile()
 	CollisionComp->InitSphereRadius(5.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComp->OnComponentHit.AddDynamic(this, &AUE4_Project_VJM5AHProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	CollisionComp->OnComponentHit.AddDynamic(this, &AUE4_Project_VJM5AHProjectile::OnEnemyHit);
 
 	// Players can't walk on it
 	CollisionComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -24,6 +25,7 @@ AUE4_Project_VJM5AHProjectile::AUE4_Project_VJM5AHProjectile()
 	ProjectileMovement->UpdatedComponent = CollisionComp;
 	ProjectileMovement->InitialSpeed = 3000.f;
 	ProjectileMovement->MaxSpeed = 3000.f;
+	ProjectileMovement->ProjectileGravityScale = 0.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
 
@@ -40,4 +42,9 @@ void AUE4_Project_VJM5AHProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* 
 
 		Destroy();
 	}
+}
+
+void AUE4_Project_VJM5AHProjectile::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	
+	Destroy();
 }

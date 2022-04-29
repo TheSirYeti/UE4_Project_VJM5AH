@@ -24,6 +24,10 @@ AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
+	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxColliderPlayer"));
+	BoxCollider->GetScaledBoxExtent();
+	BoxCollider->SetupAttachment(RootComponent);
+
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
@@ -113,6 +117,7 @@ void AUE4_Project_VJM5AHCharacter::BeginPlay()
 
 void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	hp = 5;
 	// set up gameplay key bindings
 	check(PlayerInputComponent);
 
@@ -323,5 +328,17 @@ void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
 		
 		FVector rotatedDash = GetActorRotation().RotateVector(dashDirection);
 		LaunchCharacter(rotatedDash * DashForce, true, true);
+	}
+}
+
+void AUE4_Project_VJM5AHCharacter::GenerateDamage() {
+
+	hp--;
+	FString debugText = FString::FromInt(hp);
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, "COLISIONE CON ALGO | " + debugText);
+
+	if (hp <= 0) {
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, "LEVEL LOAD?");
+		UGameplayStatics::OpenLevel(this, "LoseLevel", true, "");
 	}
 }
