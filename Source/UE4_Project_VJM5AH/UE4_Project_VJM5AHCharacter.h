@@ -61,6 +61,9 @@ class AUE4_Project_VJM5AHCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 	int hp;
 
+	UPROPERTY(EditAnywhere)
+	FText hpText;
+
 public:
 	AUE4_Project_VJM5AHCharacter();
 
@@ -136,6 +139,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void GenerateDamage();
 
+	UFUNCTION(BlueprintCallable)
+	void DoBoostJump();
+
+
+	UFUNCTION(BlueprintCallable)
+	int UpdateHPText();
+
+
 	struct TouchData
 	{
 		TouchData() { bIsPressed = false;Location=FVector::ZeroVector;}
@@ -167,5 +178,4 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
 };

@@ -19,7 +19,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 {
-	//BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AMyLevelTrigger::OnOverlapBegin);
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -126,6 +125,7 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 	
 	PlayerInputComponent->BindAction("SetRun", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::SetRunningMotion);
+	PlayerInputComponent->BindAction("Boost", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::DoBoostJump);
 
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::OnFire);
@@ -134,7 +134,6 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 	EnableTouchscreenMovement(PlayerInputComponent);
 
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AUE4_Project_VJM5AHCharacter::OnResetVR);
-
 	// Bind movement events
 	PlayerInputComponent->BindAxis("MoveForward", this, &AUE4_Project_VJM5AHCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AUE4_Project_VJM5AHCharacter::MoveRight);
@@ -341,4 +340,19 @@ void AUE4_Project_VJM5AHCharacter::GenerateDamage() {
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, "LEVEL LOAD?");
 		UGameplayStatics::OpenLevel(this, "LoseLevel", true, "");
 	}
+}
+
+void AUE4_Project_VJM5AHCharacter::DoBoostJump() {
+	if (GetCharacterMovement()->IsMovingOnGround()) {
+
+		float xValue = InputComponent->GetAxisValue("MoveForward");
+		float yValue = InputComponent->GetAxisValue("MoveRight");
+		FVector dashDirection = FVector(xValue, yValue, 0);
+
+		LaunchCharacter(GetViewRotation().Vector() * DashForce, true, true);
+	}
+}
+
+int AUE4_Project_VJM5AHCharacter::UpdateHPText() {
+	return hp;
 }
