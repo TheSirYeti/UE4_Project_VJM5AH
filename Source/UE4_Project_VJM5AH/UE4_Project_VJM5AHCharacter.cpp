@@ -23,6 +23,8 @@ AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
+	GetCharacterMovement()->AirControl = 1.0f;
+
 	BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxColliderPlayer"));
 	BoxCollider->GetScaledBoxExtent();
 	BoxCollider->SetupAttachment(RootComponent);
@@ -180,7 +182,7 @@ void AUE4_Project_VJM5AHCharacter::OnFire()
 	// try and play the sound if specified
 	if (FireSound != nullptr)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		//UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
 	// try and play a firing animation if specified
