@@ -2,6 +2,7 @@
 
 
 #include "MyLevelTrigger.h"
+#include <UE4_Project_VJM5AH/UE4_Project_VJM5AHCharacter.h>
 
 // Sets default values
 AMyLevelTrigger::AMyLevelTrigger()
@@ -18,7 +19,6 @@ AMyLevelTrigger::AMyLevelTrigger()
 void AMyLevelTrigger::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -29,7 +29,16 @@ void AMyLevelTrigger::Tick(float DeltaTime)
 }
 
 void AMyLevelTrigger::LevelLoadOnOverlap(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult) {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, levelString);
-	UGameplayStatics::OpenLevel(OtherActor, levelName, true, "");
+	
+	TSubclassOf<AUE4_Project_VJM5AHCharacter> classToFind;
+	classToFind = AUE4_Project_VJM5AHCharacter::StaticClass();
+	TArray<AActor*> playerArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), classToFind, playerArray);
+
+	actorReference = playerArray[0]->GetName();
+
+	if (OtherActor->GetName() == actorReference) {
+		UGameplayStatics::OpenLevel(OtherActor, levelName, true, "");
+	}
 }
 

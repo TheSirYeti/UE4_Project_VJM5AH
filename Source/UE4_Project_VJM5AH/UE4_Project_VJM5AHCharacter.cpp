@@ -335,11 +335,8 @@ void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
 void AUE4_Project_VJM5AHCharacter::GenerateDamage() {
 
 	hp--;
-	FString debugText = FString::FromInt(hp);
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, "COLISIONE CON ALGO | " + debugText);
 
 	if (hp <= 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, "LEVEL LOAD?");
 		UGameplayStatics::OpenLevel(this, "LoseLevel", true, "");
 	}
 }

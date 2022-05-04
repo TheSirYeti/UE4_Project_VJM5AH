@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
 #include "MyLevelTrigger.generated.h"
 
@@ -21,10 +22,13 @@ public:
 	UBoxComponent* BoxTrigger;
 
 	UPROPERTY(EditAnywhere)
-	FString levelString;
+	FName levelName;
 
 	UPROPERTY(EditAnywhere)
-	FName levelName;
+	FString actorReference;
+
+	UPROPERTY(EditAnywhere)
+	class AActor* myCharacter;
 
 protected:
 	// Called when the game starts or when spawned
