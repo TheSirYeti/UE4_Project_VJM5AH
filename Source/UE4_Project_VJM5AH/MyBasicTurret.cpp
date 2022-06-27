@@ -20,7 +20,6 @@ AMyBasicTurret::AMyBasicTurret()
 void AMyBasicTurret::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -43,6 +42,14 @@ void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	if (hp <= 0) {
 		Destroy();
 	}
+
+	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
+
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnMaterialReadyToChange, 0.2f, false);
+}
+
+void AMyBasicTurret::OnMaterialReadyToChange() {
+	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
 }
 
 

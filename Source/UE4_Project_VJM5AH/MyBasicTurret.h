@@ -25,6 +25,20 @@ public:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxCollider;
 
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* EngageMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UMaterialInstanceDynamic* DynMaterial;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor originalColor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLinearColor damageColor;
+
+	FTimerHandle handle;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,5 +53,6 @@ public:
 	UFUNCTION()
 	void OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
-
+	UFUNCTION()
+	void OnMaterialReadyToChange();
 };
