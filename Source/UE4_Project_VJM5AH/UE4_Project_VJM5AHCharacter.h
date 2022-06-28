@@ -22,7 +22,7 @@ UCLASS(config=Game)
 class AUE4_Project_VJM5AHCharacter : public ACharacter
 {
 	GENERATED_BODY()
-		//test comentario
+
 	/** Pawn mesh: 1st person view (arms; seen only by self) */
 	UPROPERTY(EditAnywhere, Category=Mesh)
 	USkeletalMeshComponent* Mesh1P;
@@ -70,8 +70,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float playerHP;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isRunning;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool hasShot;
 
 protected:
 	virtual void BeginPlay();

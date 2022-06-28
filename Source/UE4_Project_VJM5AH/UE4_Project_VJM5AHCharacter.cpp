@@ -19,9 +19,6 @@ DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
 AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 {
-
-	//test comentario
-
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
@@ -154,6 +151,10 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 void AUE4_Project_VJM5AHCharacter::OnFire()
 {
 	// try and fire a projectile
+
+	hasShot = true;
+
+
 	if (ProjectileClass != nullptr)
 	{
 		UWorld* const World = GetWorld();
@@ -197,6 +198,8 @@ void AUE4_Project_VJM5AHCharacter::OnFire()
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
 		}
 	}
+
+	hasShot = false;
 }
 
 void AUE4_Project_VJM5AHCharacter::OnResetVR()
@@ -273,6 +276,7 @@ void AUE4_Project_VJM5AHCharacter::MoveForward(float Value)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, isRunning ? "True" : "False");
 		AddMovementInput(GetActorForwardVector(), Value);
+		isRunning = true;
 		//if (isRunning == true) {
 		//	newValue = Value * 20;
 		//	AddMovementInput(GetActorForwardVector(), newValue);
@@ -283,6 +287,10 @@ void AUE4_Project_VJM5AHCharacter::MoveForward(float Value)
 		//else {
 		//	AddMovementInput(GetActorForwardVector(), Value);
 		//}
+	}
+	else 
+	{
+		isRunning = false;
 	}
 }
 
