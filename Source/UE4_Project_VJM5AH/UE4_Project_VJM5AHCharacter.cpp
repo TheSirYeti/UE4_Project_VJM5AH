@@ -58,7 +58,7 @@ AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 
 	FP_MuzzleLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
 	FP_MuzzleLocation->SetupAttachment(FP_Gun);
-	FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
+	//FP_MuzzleLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	// Default offset from the character location for projectiles to spawn
 	GunOffset = FVector(100.0f, 0.0f, 10.0f);
@@ -185,7 +185,7 @@ void AUE4_Project_VJM5AHCharacter::OnFire()
 	// try and play the sound if specified
 	if (FireSound != nullptr)
 	{
-		//UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 	}
 
 	// try and play a firing animation if specified
@@ -274,19 +274,8 @@ void AUE4_Project_VJM5AHCharacter::MoveForward(float Value)
 {
 	if (Value != 0.0f)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, isRunning ? "True" : "False");
 		AddMovementInput(GetActorForwardVector(), Value);
 		isRunning = true;
-		//if (isRunning == true) {
-		//	newValue = Value * 20;
-		//	AddMovementInput(GetActorForwardVector(), newValue);
-		//	FString StringValue = FString::SanitizeFloat(Value * 20);
-		//	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, StringValue);
-
-		//}
-		//else {
-		//	AddMovementInput(GetActorForwardVector(), Value);
-		//}
 	}
 	else 
 	{
@@ -298,7 +287,6 @@ void AUE4_Project_VJM5AHCharacter::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
-		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
 	}
 }
@@ -339,6 +327,8 @@ void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
 		
 		FVector rotatedDash = GetActorRotation().RotateVector(dashDirection);
 		LaunchCharacter(rotatedDash * DashForce, true, true);
+
+		UGameplayStatics::PlaySound2D(this, DashSound);
 	}
 }
 
@@ -359,6 +349,8 @@ void AUE4_Project_VJM5AHCharacter::DoBoostJump() {
 		FVector dashDirection = FVector(xValue, yValue, 0);
 
 		LaunchCharacter(GetViewRotation().Vector() * DashForce, true, true);
+
+		UGameplayStatics::PlaySound2D(this, JumpSound);
 	}
 }
 

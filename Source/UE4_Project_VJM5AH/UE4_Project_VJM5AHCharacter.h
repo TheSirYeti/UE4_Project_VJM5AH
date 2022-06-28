@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Sound/SoundCue.h"
 #include <UE4_Project_VJM5AH/MyLevelTrigger.h>
 #include "UE4_Project_VJM5AHCharacter.generated.h"
 
@@ -97,8 +98,15 @@ public:
 	TSubclassOf<class AUE4_Project_VJM5AHProjectile> ProjectileClass;
 
 	/** Sound to play each time we fire */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=Gameplay)
-	USoundBase* FireSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* FireSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* JumpSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* DashSound;
+
 
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
