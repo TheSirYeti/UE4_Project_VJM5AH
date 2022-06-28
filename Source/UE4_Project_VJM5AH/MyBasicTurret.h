@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "MyBasicTurret.generated.h"
 
 UCLASS()
@@ -38,6 +40,16 @@ public:
 	FLinearColor damageColor;
 
 	FTimerHandle handle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundBase* ShootingSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* DamageSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* DeathSound;
+
 
 protected:
 	// Called when the game starts or when spawned

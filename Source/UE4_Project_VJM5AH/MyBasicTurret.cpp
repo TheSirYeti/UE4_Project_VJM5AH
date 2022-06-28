@@ -37,15 +37,18 @@ void AMyBasicTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 }
 
 void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+	
 	hp--;
 
 	if (hp <= 0) {
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
 		Destroy();
 	}
 
+	UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetActorLocation());
 	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
 
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnMaterialReadyToChange, 0.2f, false);
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnMaterialReadyToChange, 0.35f, false);
 }
 
 void AMyBasicTurret::OnMaterialReadyToChange() {
