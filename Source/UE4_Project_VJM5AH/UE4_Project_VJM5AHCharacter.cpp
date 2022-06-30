@@ -150,56 +150,58 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 
 void AUE4_Project_VJM5AHCharacter::OnFire()
 {
-	// try and fire a projectile
+	if (!hasShot && !isRunning && !isSideMovement) {
+		// try and fire a projectile
 
-	hasShot = true;
+		hasShot = true;
 
-
-	if (ProjectileClass != nullptr)
-	{
-		UWorld* const World = GetWorld();
-		if (World != nullptr)
+		if (ProjectileClass != nullptr)
 		{
-			if (bUsingMotionControllers)
+			UWorld* const World = GetWorld();
+			if (World != nullptr)
 			{
-				const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
-				const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
-				World->SpawnActor<AUE4_Project_VJM5AHProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
-			}
-			else
-			{
-				const FRotator SpawnRotation = GetControlRotation();
-				// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
-				const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
+				if (bUsingMotionControllers)
+				{
+					const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
+					const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
+					World->SpawnActor<AUE4_Project_VJM5AHProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+				}
+				else
+				{
+					const FRotator SpawnRotation = GetControlRotation();
+					// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+					const FVector SpawnLocation = ((FP_MuzzleLocation != nullptr) ? FP_MuzzleLocation->GetComponentLocation() : GetActorLocation()) + SpawnRotation.RotateVector(GunOffset);
 
-				//Set Spawn Collision Handling Override
-				FActorSpawnParameters ActorSpawnParams;
-				ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+					//Set Spawn Collision Handling Override
+					FActorSpawnParameters ActorSpawnParams;
+					ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
-				// spawn the projectile at the muzzle
-				World->SpawnActor<AUE4_Project_VJM5AHProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+					// spawn the projectile at the muzzle
+					World->SpawnActor<AUE4_Project_VJM5AHProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+				}
 			}
 		}
-	}
 
-	// try and play the sound if specified
-	if (FireSound != nullptr)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
-	}
-
-	// try and play a firing animation if specified
-	if (FireAnimation != nullptr)
-	{
-		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
-		if (AnimInstance != nullptr)
+		// try and play the sound if specified
+		if (FireSound != nullptr)
 		{
-			AnimInstance->Montage_Play(FireAnimation, 1.f);
+			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
 		}
-	}
 
-	hasShot = false;
+		// try and play a firing animation if specified
+		if (FireAnimation != nullptr)
+		{
+			// Get the animation object for the arms mesh
+			UAnimInstance* AnimInstance = Mesh1P->GetAnimInstance();
+			if (AnimInstance != nullptr)
+			{
+				AnimInstance->Montage_Play(FireAnimation, 1.f);
+			}
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AUE4_Project_VJM5AHCharacter::DoShotDelay, 0.25f, false);
+
+	}
 }
 
 void AUE4_Project_VJM5AHCharacter::OnResetVR()
@@ -232,43 +234,6 @@ void AUE4_Project_VJM5AHCharacter::EndTouch(const ETouchIndex::Type FingerIndex,
 	TouchItem.bIsPressed = false;
 }
 
-//Commenting this section out to be consistent with FPS BP template.
-//This allows the user to turn without using the right virtual joystick
-
-//void AUE4_Project_VJM5AHCharacter::TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location)
-//{
-//	if ((TouchItem.bIsPressed == true) && (TouchItem.FingerIndex == FingerIndex))
-//	{
-//		if (TouchItem.bIsPressed)
-//		{
-//			if (GetWorld() != nullptr)
-//			{
-//				UGameViewportClient* ViewportClient = GetWorld()->GetGameViewport();
-//				if (ViewportClient != nullptr)
-//				{
-//					FVector MoveDelta = Location - TouchItem.Location;
-//					FVector2D ScreenSize;
-//					ViewportClient->GetViewportSize(ScreenSize);
-//					FVector2D ScaledDelta = FVector2D(MoveDelta.X, MoveDelta.Y) / ScreenSize;
-//					if (FMath::Abs(ScaledDelta.X) >= 4.0 / ScreenSize.X)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.X * BaseTurnRate;
-//						AddControllerYawInput(Value);
-//					}
-//					if (FMath::Abs(ScaledDelta.Y) >= 4.0 / ScreenSize.Y)
-//					{
-//						TouchItem.bMoved = true;
-//						float Value = ScaledDelta.Y * BaseTurnRate;
-//						AddControllerPitchInput(Value);
-//					}
-//					TouchItem.Location = Location;
-//				}
-//				TouchItem.Location = Location;
-//			}
-//		}
-//	}
-//}
 
 void AUE4_Project_VJM5AHCharacter::MoveForward(float Value)
 {
@@ -287,7 +252,12 @@ void AUE4_Project_VJM5AHCharacter::MoveRight(float Value)
 {
 	if (Value != 0.0f)
 	{
+		isSideMovement = true;
 		AddMovementInput(GetActorRightVector(), Value);
+	}
+	else 
+	{
+		isSideMovement = false;
 	}
 }
 
@@ -356,4 +326,8 @@ void AUE4_Project_VJM5AHCharacter::DoBoostJump() {
 
 int AUE4_Project_VJM5AHCharacter::UpdateHPText() {
 	return hp;
+}
+
+void AUE4_Project_VJM5AHCharacter::DoShotDelay() {
+	hasShot = false;
 }

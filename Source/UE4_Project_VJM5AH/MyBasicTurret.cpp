@@ -13,7 +13,7 @@ AMyBasicTurret::AMyBasicTurret()
 	BoxCollider->GetScaledBoxExtent();
 	BoxCollider->SetupAttachment(RootComponent);
 
-	BoxCollider->OnComponentHit.AddDynamic(this, &AMyBasicTurret::OnTurretHit);
+	BoxCollider->OnComponentHit.AddDynamic(this, &AMyBasicTurret::DoHit);
 }
 
 // Called when the game starts or when spawned
@@ -36,8 +36,10 @@ void AMyBasicTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
-void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	
+void AMyBasicTurret::DoHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+
+	//genericEnemy->OnGenericHit();
+
 	hp--;
 
 	if (hp <= 0) {
@@ -54,5 +56,24 @@ void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 void AMyBasicTurret::OnMaterialReadyToChange() {
 	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
 }
+
+//void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
+//	
+//	hp--;
+//
+//	if (hp <= 0) {
+//		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+//		Destroy();
+//	}
+//
+//	UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetActorLocation());
+//	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
+//
+//	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnMaterialReadyToChange, 0.35f, false);
+//}
+//
+//void AMyBasicTurret::OnMaterialReadyToChange() {
+//	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
+//}
 
 

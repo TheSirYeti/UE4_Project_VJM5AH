@@ -75,7 +75,12 @@ public:
 	bool isRunning;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isSideMovement;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool hasShot;
+
+	FTimerHandle handle;
 
 protected:
 	virtual void BeginPlay();
@@ -156,6 +161,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	int UpdateHPText();
+
+	UFUNCTION(BlueprintCallable)
+	void DoShotDelay();
 
 
 	struct TouchData

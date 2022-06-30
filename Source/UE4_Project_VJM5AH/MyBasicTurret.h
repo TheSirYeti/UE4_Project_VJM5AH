@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include <UE4_Project_VJM5AH/EnemyActorComponent.h>
 #include "MyBasicTurret.generated.h"
 
 UCLASS()
@@ -50,6 +51,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundCue* DeathSound;
 
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	//UEnemyActorComponent* genericEnemy;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -62,8 +66,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION()
-	void OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION(BlueprintCallable)
+	void DoHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
 	void OnMaterialReadyToChange();
