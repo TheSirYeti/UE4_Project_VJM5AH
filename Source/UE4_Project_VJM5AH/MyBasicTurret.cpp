@@ -35,6 +35,8 @@ void AMyBasicTurret::BeginPlay()
 	DynMaterial = UMaterialInstanceDynamic::Create(EngageMaterial, this);
 	TurretBodyMesh->SetMaterial(5, DynMaterial);
 
+	genericEnemy->OnMaterialReadyToChange(originalColor, DynMaterial);
+
 	pawnSensor->OnSeePawn.AddDynamic(this, &AMyBasicTurret::OnSeePawn);
 }
 
@@ -97,17 +99,8 @@ void AMyBasicTurret::OnSeePawn(APawn* OtherPawn)
 
 void AMyBasicTurret::DoBulletSpawning() 
 {
-	FString message = TEXT("BANG!");
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
-	
 	FRotator Rot = this->GetActorRotation();
 	FVector Loc = BulletSpawnPosition->GetComponentLocation();
-
-	message = TEXT("ACTOR LOCATION: " + this->GetActorLocation().ToString());
-	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
-
-	message = TEXT("DETERMINED COMPONENT LOCATION: " + Loc.ToString());
-	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
 
 	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
 	
@@ -115,18 +108,6 @@ void AMyBasicTurret::DoBulletSpawning()
 	UClass* LoadedBpAsset = ActorBpClass.LoadSynchronous();
 
 	AActor* myBullet = GetWorld()->SpawnActor(bulletPrefab, &Loc, &Rot, SpawnParams);
-
-	if (myBullet == nullptr) {
-		message = TEXT("ES NULO: ");
-		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
-	}
-	else {
-		message = TEXT("NO ES NULO: ");
-		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
-	}
-
-	message = TEXT("FINAL COMPONENT LOCATION: " + myBullet->GetActorLocation().ToString());
-	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
 
 	isShooting = false;
 }
