@@ -7,72 +7,37 @@
 UEnemyActorComponent::UEnemyActorComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
-	hp = 3;
-	fireRate = 2.0f;
-
-
-	//BoxCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxColliderTurret"));
-	//BoxCollider->GetScaledBoxExtent();
-
-	//BoxCollider->OnComponentHit.AddDynamic(this, &UEnemyActorComponent::OnTurretHit);
 }
-
 
 // Called when the game starts
 void UEnemyActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("SETUP ACTORCOMPONENT C++ | BEGIN PLAY"));
 }
-
 
 // Called every frame
 void UEnemyActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
-void UEnemyActorComponent::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-
-	hp--;
-	
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("TOME DANIO AUCH"));
-
-	if (hp <= 0) {
-		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
-		GetOwner()->Destroy();
-	}
-
-	UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetOwner()->GetActorLocation());
+bool UEnemyActorComponent::DoHitRegistry(int hp, FLinearColor damageColor, UMaterialInstanceDynamic* DynMaterial) 
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("GENERIC ACTOR AUCH | START"));
 	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
 
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &UEnemyActorComponent::OnMaterialReadyToChange, 0.35f, false);
-}
-
-void UEnemyActorComponent::OnGenericHit() {
-
-	hp--;
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("TOME DANIO AUCH"));
-
 	if (hp <= 0) {
-		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
-		GetOwner()->Destroy();
+		return false;
 	}
-
-	UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetOwner()->GetActorLocation());
-	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
-
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &UEnemyActorComponent::OnMaterialReadyToChange, 0.35f, false);
-
+	return true;
 }
 
-void UEnemyActorComponent::OnMaterialReadyToChange() {
+void UEnemyActorComponent::OnMaterialReadyToChange(FLinearColor originalColor, UMaterialInstanceDynamic* DynMaterial) {
+
 	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("GENERIC ACTOR AUCH | FIN"));
+
 }
 

@@ -9,6 +9,11 @@ AMyPatrolEnemy::AMyPatrolEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	TurretBodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret_Body"));
+	TurretBodyMesh->SetupAttachment(RootComponent);
+
+	BulletSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("BULLET_SPAWN_POS"));
+	BulletSpawnPosition->SetupAttachment(TurretBodyMesh);
 }
 
 // Called when the game starts or when spawned

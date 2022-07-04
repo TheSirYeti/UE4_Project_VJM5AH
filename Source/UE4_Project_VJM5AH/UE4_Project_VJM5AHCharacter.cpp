@@ -164,7 +164,22 @@ void AUE4_Project_VJM5AHCharacter::OnFire()
 				{
 					const FRotator SpawnRotation = VR_MuzzleLocation->GetComponentRotation();
 					const FVector SpawnLocation = VR_MuzzleLocation->GetComponentLocation();
-					World->SpawnActor<AUE4_Project_VJM5AHProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
+
+					TSoftClassPtr<AActor> ActorBpClass = TSoftClassPtr<AActor>(FSoftObjectPath(TEXT("Blueprint'/Game/Blueprints/Player/FirstPersonProjectile.FirstPersonProjectile'")));
+
+					UClass* LoadedBpAsset = ActorBpClass.LoadSynchronous();
+
+					FVector Loc = SpawnLocation;
+					FRotator Rot = SpawnRotation;
+					FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+					GetWorld()->SpawnActor(LoadedBpAsset, &Loc, &Rot, SpawnParams);
+
+					//static ConstructorHelpers::FObjectFinder<UBlueprint> BulletBP(TEXT("/Game/Blueprints/Player/FirstPersonProjectile"));
+					//
+					//MyBullet = GetWorld()->SpawnActor(BulletBP.Object->GetClass(), SpawnLocation, SpawnRotation);
+					
+
+					//World->SpawnActor<AUE4_Project_VJM5AHProjectile>(ProjectileClass, SpawnLocation, SpawnRotation);
 				}
 				else
 				{

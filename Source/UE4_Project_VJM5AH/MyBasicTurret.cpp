@@ -2,6 +2,9 @@
 
 
 #include "MyBasicTurret.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include <UE4_Project_VJM5AH/UE4_Project_VJM5AHProjectile.h>
 
 // Sets default values
 AMyBasicTurret::AMyBasicTurret()
@@ -13,13 +16,26 @@ AMyBasicTurret::AMyBasicTurret()
 	BoxCollider->GetScaledBoxExtent();
 	BoxCollider->SetupAttachment(RootComponent);
 
-	BoxCollider->OnComponentHit.AddDynamic(this, &AMyBasicTurret::DoHit);
+	BoxCollider->OnComponentBeginOverlap.AddDynamic(this, &AMyBasicTurret::OnTakeHit);
+
+	TurretBodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret_Body"));
+	TurretBodyMesh->SetupAttachment(BoxCollider);
+
+	BulletSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("BULLET_SPAWN_POS"));
+	BulletSpawnPosition->SetupAttachment(TurretBodyMesh);
+
+	pawnSensor = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PAWN_SENSOR"));
 }
 
 // Called when the game starts or when spawned
 void AMyBasicTurret::BeginPlay()
 {
 	Super::BeginPlay();
+
+	DynMaterial = UMaterialInstanceDynamic::Create(EngageMaterial, this);
+	TurretBodyMesh->SetMaterial(5, DynMaterial);
+
+	pawnSensor->OnSeePawn.AddDynamic(this, &AMyBasicTurret::OnSeePawn);
 }
 
 // Called every frame
@@ -36,44 +52,84 @@ void AMyBasicTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
-void AMyBasicTurret::DoHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-
-	//genericEnemy->OnGenericHit();
+void AMyBasicTurret::OnTakeHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("BASIC TURRET | LLAMO A GENERIC ACTOR FUNC"));
 
 	hp--;
 
-	if (hp <= 0) {
-		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	if (genericEnemy->DoHitRegistry(hp, damageColor, DynMaterial))
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetOwner()->GetActorLocation());
+	}
+	else 
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("DEAD"));
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
 		Destroy();
 	}
 
-	UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetActorLocation());
-	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
-
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnMaterialReadyToChange, 0.35f, false);
+	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnTakeHitOver, 0.3f, false);
 }
 
-void AMyBasicTurret::OnMaterialReadyToChange() {
-	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
+void AMyBasicTurret::OnTakeHitOver() 
+{
+	genericEnemy->OnMaterialReadyToChange(originalColor, DynMaterial);
 }
 
-//void AMyBasicTurret::OnTurretHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-//	
-//	hp--;
-//
-//	if (hp <= 0) {
-//		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
-//		Destroy();
-//	}
-//
-//	UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetActorLocation());
-//	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
-//
-//	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnMaterialReadyToChange, 0.35f, false);
-//}
-//
-//void AMyBasicTurret::OnMaterialReadyToChange() {
-//	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
-//}
+
+void AMyBasicTurret::OnSeePawn(APawn* OtherPawn)
+{
+	if (!isShooting) 
+	{
+		isShooting = true;
+		FString message = TEXT("Saw Actor ") + OtherPawn->GetName();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+
+		FVector PlayerLoc = OtherPawn->GetActorLocation();
+		FVector TurretLoc = this->GetActorLocation();
+		FRotator FinalRot = UKismetMathLibrary::FindLookAtRotation(TurretLoc, PlayerLoc);
+		this->SetActorRotation(FinalRot);
+
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::DoBulletSpawning, fireRate, false);
+	}
+}
+
+void AMyBasicTurret::DoBulletSpawning() 
+{
+	FString message = TEXT("BANG!");
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
+	
+	FRotator Rot = this->GetActorRotation();
+	FVector Loc = BulletSpawnPosition->GetComponentLocation();
+
+	message = TEXT("ACTOR LOCATION: " + this->GetActorLocation().ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
+
+	message = TEXT("DETERMINED COMPONENT LOCATION: " + Loc.ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
+
+	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+	
+	TSoftClassPtr<AActor> ActorBpClass = TSoftClassPtr<AActor>(FSoftObjectPath(TEXT("Blueprint'/Game/Blueprints/Player/FirstPersonProjectile.FirstPersonProjectile'")));
+	UClass* LoadedBpAsset = ActorBpClass.LoadSynchronous();
+
+	AActor* myBullet = GetWorld()->SpawnActor(bulletPrefab, &Loc, &Rot, SpawnParams);
+
+	if (myBullet == nullptr) {
+		message = TEXT("ES NULO: ");
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
+	}
+	else {
+		message = TEXT("NO ES NULO: ");
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
+	}
+
+	message = TEXT("FINAL COMPONENT LOCATION: " + myBullet->GetActorLocation().ToString());
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, message);
+
+	isShooting = false;
+}
+
 
 
