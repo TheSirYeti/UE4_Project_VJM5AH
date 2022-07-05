@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Perception/PawnSensingComponent.h"
 #include <UE4_Project_VJM5AH/EnemyActorComponent.h>
 #include "MyPatrolEnemy.generated.h"
 
@@ -52,6 +53,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "DeathSFX", meta = (UseComponentPicket, AllowedClasses = "SoundCue"))
 		USoundCue* DeathSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PawnSensing")
+		UPawnSensingComponent* pawnSensor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Bullet_Blueprint")
+		TSubclassOf<AActor> bulletPrefab;
+
+	UPROPERTY()
+		bool isShooting;
+
 	FTimerHandle handle;
 
 protected:
@@ -64,5 +74,17 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+		void OnTakeHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+		void OnTakeHitOver();
+
+	UFUNCTION()
+		void OnSeePawn(APawn* OtherPawn);
+
+	UFUNCTION()
+		void DoBulletSpawning();
 
 };

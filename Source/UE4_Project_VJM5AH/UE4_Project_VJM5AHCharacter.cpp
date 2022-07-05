@@ -89,6 +89,12 @@ AUE4_Project_VJM5AHCharacter::AUE4_Project_VJM5AHCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
+	PlayerMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("LuigiMesh"));
+	PlayerMesh->SetupAttachment(FirstPersonCameraComponent);
+
+	myGun = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LuigiGun"));
+	myGun->SetupAttachment(PlayerMesh, "LeftHandSocket");
 }
 
 void AUE4_Project_VJM5AHCharacter::BeginPlay()
@@ -320,6 +326,7 @@ void AUE4_Project_VJM5AHCharacter::SetRunningMotion() {
 void AUE4_Project_VJM5AHCharacter::GenerateDamage() {
 
 	hp--;
+	UGameplayStatics::PlaySoundAtLocation(this, HurtSound, GetActorLocation());
 
 	if (hp <= 0) {
 		UGameplayStatics::OpenLevel(this, "LoseLevel", true, "");

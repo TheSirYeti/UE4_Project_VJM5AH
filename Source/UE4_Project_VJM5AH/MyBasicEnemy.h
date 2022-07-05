@@ -13,7 +13,6 @@ class UE4_PROJECT_VJM5AH_API AMyBasicEnemy : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AMyBasicEnemy();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -21,8 +20,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float fireRate;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite)
 
 protected:
 	// Called when the game starts or when spawned

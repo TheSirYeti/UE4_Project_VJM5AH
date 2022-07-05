@@ -56,22 +56,22 @@ void AMyBasicTurret::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void AMyBasicTurret::OnTakeHit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("BASIC TURRET | LLAMO A GENERIC ACTOR FUNC"));
+	if (OtherActor != this) {
+		hp--;
 
-	hp--;
+		if (genericEnemy->DoHitRegistry(hp, damageColor, DynMaterial))
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetOwner()->GetActorLocation());
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT(" "));
+			UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
+			Destroy();
+		}
 
-	if (genericEnemy->DoHitRegistry(hp, damageColor, DynMaterial))
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, DamageSound, GetOwner()->GetActorLocation());
+		GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnTakeHitOver, 0.3f, false);
 	}
-	else 
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("DEAD"));
-		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetOwner()->GetActorLocation());
-		Destroy();
-	}
-
-	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::OnTakeHitOver, 0.3f, false);
 }
 
 void AMyBasicTurret::OnTakeHitOver() 
@@ -82,16 +82,14 @@ void AMyBasicTurret::OnTakeHitOver()
 
 void AMyBasicTurret::OnSeePawn(APawn* OtherPawn)
 {
+	FVector PlayerLoc = OtherPawn->GetActorLocation();
+	FVector TurretLoc = this->GetActorLocation();
+	FRotator FinalRot = UKismetMathLibrary::FindLookAtRotation(TurretLoc, PlayerLoc);
+	this->SetActorRotation(FinalRot);
+
 	if (!isShooting) 
 	{
 		isShooting = true;
-		FString message = TEXT("Saw Actor ") + OtherPawn->GetName();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, message);
-
-		FVector PlayerLoc = OtherPawn->GetActorLocation();
-		FVector TurretLoc = this->GetActorLocation();
-		FRotator FinalRot = UKismetMathLibrary::FindLookAtRotation(TurretLoc, PlayerLoc);
-		this->SetActorRotation(FinalRot);
 
 		GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyBasicTurret::DoBulletSpawning, fireRate, false);
 	}

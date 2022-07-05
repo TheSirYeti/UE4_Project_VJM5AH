@@ -13,8 +13,6 @@ UEnemyActorComponent::UEnemyActorComponent()
 void UEnemyActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("SETUP ACTORCOMPONENT C++ | BEGIN PLAY"));
 }
 
 // Called every frame
@@ -25,7 +23,6 @@ void UEnemyActorComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 bool UEnemyActorComponent::DoHitRegistry(int hp, FLinearColor damageColor, UMaterialInstanceDynamic* DynMaterial) 
 {
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("GENERIC ACTOR AUCH | START"));
 	DynMaterial->SetVectorParameterValue("EngageColor", damageColor);
 
 	if (hp <= 0) {
@@ -37,7 +34,5 @@ bool UEnemyActorComponent::DoHitRegistry(int hp, FLinearColor damageColor, UMate
 void UEnemyActorComponent::OnMaterialReadyToChange(FLinearColor originalColor, UMaterialInstanceDynamic* DynMaterial) {
 
 	DynMaterial->SetVectorParameterValue("EngageColor", originalColor);
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Yellow, TEXT("GENERIC ACTOR AUCH | FIN"));
-
 }
 

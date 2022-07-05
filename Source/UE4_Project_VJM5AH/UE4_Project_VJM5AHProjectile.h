@@ -23,6 +23,9 @@ class AUE4_Project_VJM5AHProjectile : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* BulletMesh;
+
 public:
 	AUE4_Project_VJM5AHProjectile();
 

@@ -59,6 +59,12 @@ class AUE4_Project_VJM5AHCharacter : public ACharacter
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxCollider;
 
+	UPROPERTY(EditAnywhere, Category = Mesh)
+	USkeletalMeshComponent* PlayerMesh;
+	
+	UPROPERTY(EditAnywhere, Category = Mesh)
+	UStaticMeshComponent* myGun;
+
 	UPROPERTY(EditAnywhere)
 	int hp;
 
@@ -112,6 +118,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USoundCue* DashSound;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	USoundCue* HurtSound;
+
 
 	/** AnimMontage to play each time we fire */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
@@ -151,9 +160,6 @@ protected:
 	void LookUpAtRate(float Rate);
 
 	void SetRunningMotion();
-
-	UFUNCTION(BlueprintCallable)
-	void GenerateDamage();
 
 	UFUNCTION(BlueprintCallable)
 	void DoBoostJump();
@@ -197,4 +203,7 @@ public:
 	USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+
+	UFUNCTION(BlueprintCallable)
+	void GenerateDamage();
 };
