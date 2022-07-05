@@ -42,6 +42,6 @@ void AUE4_Project_VJM5AHProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* 
 }
 
 void AUE4_Project_VJM5AHProjectile::OnEnemyHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {
-	
+
 	Destroy();
 }

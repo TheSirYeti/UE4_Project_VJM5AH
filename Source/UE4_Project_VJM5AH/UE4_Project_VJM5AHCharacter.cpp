@@ -156,7 +156,7 @@ void AUE4_Project_VJM5AHCharacter::SetupPlayerInputComponent(class UInputCompone
 
 void AUE4_Project_VJM5AHCharacter::OnFire()
 {
-	if (!hasShot && !isRunning && !isSideMovement) {
+	if (!hasShot) { //&& !isRunning && !isSideMovement
 		// try and fire a projectile
 
 		hasShot = true;
