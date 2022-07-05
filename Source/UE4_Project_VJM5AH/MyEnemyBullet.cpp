@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "MyEnemyBullet.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
 AMyEnemyBullet::AMyEnemyBullet()
@@ -37,6 +37,8 @@ void AMyEnemyBullet::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+    //GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT(" a "));
+
     myColor.R = lerpingValue;
     myColor.G = lerpingValue;
     myColor.B = lerpingValue;
@@ -66,6 +68,7 @@ void AMyEnemyBullet::OnBulletCollided(UPrimitiveComponent* OverlappedComp, AActo
         if (FoundActor == OtherActor) 
         {
             myCharacter->GenerateDamage();
+            Destroy();
         }
     }
 }

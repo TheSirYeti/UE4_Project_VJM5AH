@@ -116,6 +116,8 @@ void AUE4_Project_VJM5AHCharacter::BeginPlay()
 		VR_Gun->SetHiddenInGame(true, true);
 		Mesh1P->SetHiddenInGame(false, true);
 	}
+
+	GetCharacterMovement()->JumpZVelocity *= 2;
 }
 
 //////////////////////////////////////////////////////////////////////////

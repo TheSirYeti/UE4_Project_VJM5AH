@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "MyPatrolEnemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "MyPatrolEnemy.h"
 
 // Sets default values
 AMyPatrolEnemy::AMyPatrolEnemy()
