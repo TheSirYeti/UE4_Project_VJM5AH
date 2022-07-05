@@ -30,6 +30,9 @@ public:
 		UStaticMeshComponent* TurretBodyMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UStaticMeshComponent* TurretHeaderMesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		USceneComponent* BulletSpawnPosition;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

@@ -20,6 +20,8 @@ AMyEnemyBullet::AMyEnemyBullet()
     ProjectileMovement->ProjectileGravityScale = 0.f;
     ProjectileMovement->bRotationFollowsVelocity = true;
     ProjectileMovement->bShouldBounce = false;
+
+    PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned

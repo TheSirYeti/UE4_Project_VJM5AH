@@ -17,6 +17,9 @@ AMyPatrolEnemy::AMyPatrolEnemy()
 	TurretBodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret_Body"));
 	TurretBodyMesh->SetupAttachment(BoxCollider);
 
+	TurretHeaderMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Turret_Header"));
+	TurretHeaderMesh->SetupAttachment(BoxCollider);
+
 	BulletSpawnPosition = CreateDefaultSubobject<USceneComponent>(TEXT("BULLET_SPAWN_POS"));
 	BulletSpawnPosition->SetupAttachment(TurretBodyMesh);
 
@@ -85,12 +88,22 @@ void AMyPatrolEnemy::OnSeePawn(APawn* OtherPawn)
 	FRotator FinalRot = UKismetMathLibrary::FindLookAtRotation(TurretLoc, PlayerLoc);
 	this->SetActorRotation(FinalRot);
 
-	if (!isShooting)
-	{
-		isShooting = true;
+	FRotator Rot = this->GetActorRotation();
+	FVector Loc = BulletSpawnPosition->GetComponentLocation();
 
-		GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyPatrolEnemy::DoBulletSpawning, fireRate, false);
-	}
+	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
+
+	TSoftClassPtr<AActor> ActorBpClass = TSoftClassPtr<AActor>(FSoftObjectPath(TEXT("Blueprint'/Game/Blueprints/Player/FirstPersonProjectile.FirstPersonProjectile'")));
+	UClass* LoadedBpAsset = ActorBpClass.LoadSynchronous();
+
+	AActor* myBullet = GetWorld()->SpawnActor(bulletPrefab, &Loc, &Rot, SpawnParams);
+
+	//if (!isShooting)
+	//{
+	//	isShooting = true;
+
+	//	GetWorld()->GetTimerManager().SetTimer(handle, this, &AMyPatrolEnemy::DoBulletSpawning, fireRate, false);
+	//}
 }
 
 void AMyPatrolEnemy::DoBulletSpawning()
