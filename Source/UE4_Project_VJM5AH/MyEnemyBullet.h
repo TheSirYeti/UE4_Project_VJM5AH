@@ -25,6 +25,9 @@ public:
 	AUE4_Project_VJM5AHCharacter* myCharacter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<AUE4_Project_VJM5AHCharacter> characterClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* myMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))

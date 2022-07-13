@@ -99,16 +99,9 @@ void AMyBasicTurret::DoBulletSpawning()
 {
 	FRotator Rot = this->GetActorRotation();
 	FVector Loc = BulletSpawnPosition->GetComponentLocation();
-
 	FActorSpawnParameters SpawnParams = FActorSpawnParameters();
-	
-	TSoftClassPtr<AActor> ActorBpClass = TSoftClassPtr<AActor>(FSoftObjectPath(TEXT("Blueprint'/Game/Blueprints/Player/FirstPersonProjectile.FirstPersonProjectile'")));
-	UClass* LoadedBpAsset = ActorBpClass.LoadSynchronous();
 
 	AActor* myBullet = GetWorld()->SpawnActor(bulletPrefab, &Loc, &Rot, SpawnParams);
 
 	isShooting = false;
 }
-
-
-

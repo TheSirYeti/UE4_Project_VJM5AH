@@ -56,10 +56,8 @@ void AMyEnemyBullet::Tick(float DeltaTime)
 
 void AMyEnemyBullet::OnBulletCollided(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) 
 {
-    AActor* FoundActor = UGameplayStatics::GetActorOfClass(GetWorld(),
-        AUE4_Project_VJM5AHCharacter::StaticClass());
-
-    myCharacter = Cast<AUE4_Project_VJM5AHCharacter>(FoundActor);
+    AActor* FindClass = UGameplayStatics::GetActorOfClass(GetWorld(), characterClass);
+    myCharacter = Cast<AUE4_Project_VJM5AHCharacter>(FindClass);
 
     if (myCharacter == nullptr)
     {
@@ -67,7 +65,7 @@ void AMyEnemyBullet::OnBulletCollided(UPrimitiveComponent* OverlappedComp, AActo
     }
     else
     {
-        if (FoundActor == OtherActor) 
+        if (myCharacter == OtherActor) 
         {
             myCharacter->GenerateDamage();
             Destroy();
